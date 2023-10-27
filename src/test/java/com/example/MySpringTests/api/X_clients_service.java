@@ -6,10 +6,12 @@ import com.example.MySpringTests.Model.Employee;
 import java.io.IOException;
 import java.util.List;
 
-public interface X_clients {
+public interface X_clients_service {
+    List<Company> getAllCompanyList() throws IOException;
     List<Company> getActiveCopmanyList() throws IOException;
-    void createEmployee();
-    List<Employee> getEmployeeList();
+    int addCompany() throws IOException;
     void deleteCompany();
+    int addEmployee(int companyId) throws IOException;
+    List<Employee> getEmployeeList();
 
 }
