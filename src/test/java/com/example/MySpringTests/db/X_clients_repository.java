@@ -12,5 +12,7 @@ public interface X_clients_repository {
     int addCompany() throws SQLException;
     void deleteCompany(int id) throws SQLException;
     List<Employee> getAllEmployees() throws SQLException;
-    Employee getEmployeeById(int id);
+    int addEmployee(int company_id) throws SQLException;
+    void changeEmployeeIsActiveInfo(int employeeId) throws SQLException;
+    Company getCompanyById(int companyId) throws SQLException;
 }

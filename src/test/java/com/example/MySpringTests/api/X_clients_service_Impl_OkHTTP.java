@@ -3,7 +3,6 @@ package com.example.MySpringTests.api;
 import com.example.MySpringTests.Model.Company;
 import com.example.MySpringTests.Model.Employee;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +14,10 @@ import java.util.List;
 public class X_clients_service_Impl_OkHTTP implements X_clients_service {
     @Value("${base_url}")
     private String BASE_URL;
-    @Value("${company_path}")
-    private String COMPANY_PATH;
+    @Value("${company_path1}")
+    private String COMPANY_PATH1;
+    @Value("${company_path2}")
+    private String COMPANY_PATH2;
     @Value("${employee_path}")
     private String EMPLOYEE_PATH;
     @Autowired
@@ -37,7 +38,7 @@ public class X_clients_service_Impl_OkHTTP implements X_clients_service {
         HttpUrl url=HttpUrl
                 .parse(BASE_URL)
                 .newBuilder()
-                .addPathSegment(COMPANY_PATH)
+                .addPathSegment(COMPANY_PATH1)
                 .build();
         Request request=new Request.Builder().get().url(url).build();
         Response response=client.getClient().newCall(request).execute();
@@ -49,7 +50,7 @@ public class X_clients_service_Impl_OkHTTP implements X_clients_service {
     public List<Company> getActiveCopmanyList() throws IOException {
         HttpUrl url=HttpUrl.parse(BASE_URL)
                 .newBuilder()
-                .addPathSegment(COMPANY_PATH)
+                .addPathSegment(COMPANY_PATH1)
                 .addQueryParameter("active","true").build();
         Request request=new Request.Builder().get().url(url).build();
         Response response=client.getClient().newCall(request).execute();
@@ -62,7 +63,7 @@ public class X_clients_service_Impl_OkHTTP implements X_clients_service {
 //        авторизация
         String userToken = auth.auth().getUserToken();
 //        добавление новой компании авторизованным пользователем (админом)
-        HttpUrl url=HttpUrl.parse(BASE_URL).newBuilder().addPathSegment(COMPANY_PATH).build();
+        HttpUrl url=HttpUrl.parse(BASE_URL).newBuilder().addPathSegment(COMPANY_PATH1).build();
         RequestBody body=RequestBody
                 .create("{\"name\":\""+company_name+"\",\"description\":\""+company_desc+"\"}",APPLICATION_JSON);
         Request request=new Request.Builder().post(body).url(url).addHeader("x-client-token",userToken).build();
@@ -91,7 +92,32 @@ public class X_clients_service_Impl_OkHTTP implements X_clients_service {
     }
 
     @Override
-    public void deleteCompany() {
+    public List<Employee> getEmployeeByCompanyId(int companyId) throws IOException {
+        HttpUrl url=HttpUrl
+                .parse(BASE_URL)
+                .newBuilder()
+                .addPathSegment(EMPLOYEE_PATH)
+                .addQueryParameter("company", String.valueOf(companyId))
+                .build();
+        Request request=new Request.Builder().get().url(url).build();
+        Response response=client.getClient().newCall(request).execute();
+        List<Employee> list=mapper.getMapper().readValue(response.body().string(), new TypeReference<List<Employee>>() {});
+        return list;
+    }
 
+    @Override
+    public void deleteCompany(int companyId) throws IOException {
+//        авторизация
+        String userToken=auth.auth().getUserToken();
+//        удаление компании
+        HttpUrl url=HttpUrl
+                .parse(BASE_URL)
+                .newBuilder()
+                .addPathSegment(COMPANY_PATH1)
+                .addPathSegment(COMPANY_PATH2)
+                .addPathSegment(String.valueOf(companyId))
+                .build();
+        Request request=new Request.Builder().get().url(url).addHeader("x-client-token",userToken).build();
+        client.getClient().newCall(request).execute();
     }
 }

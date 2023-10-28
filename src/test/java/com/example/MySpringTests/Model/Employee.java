@@ -9,6 +9,7 @@ public class Employee {
     private String lastName;
     private int companyId;
     private String phone;
+    private boolean isActive;
 
     public int getId() {
         return id;
@@ -30,6 +31,10 @@ public class Employee {
         return phone;
     }
 
+    public boolean getIsActive() {
+        return isActive;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -48,5 +53,9 @@ public class Employee {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
 }

@@ -10,8 +10,9 @@ public interface X_clients_service {
     List<Company> getAllCompanyList() throws IOException;
     List<Company> getActiveCopmanyList() throws IOException;
     int addCompany() throws IOException;
-    void deleteCompany();
+    void deleteCompany(int companyId) throws IOException;
     int addEmployee(int companyId) throws IOException;
     List<Employee> getEmployeeList();
+    List<Employee> getEmployeeByCompanyId(int companyId) throws IOException;
 
 }

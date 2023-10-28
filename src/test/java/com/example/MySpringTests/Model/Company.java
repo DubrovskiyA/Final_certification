@@ -2,6 +2,7 @@ package com.example.MySpringTests.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,13 +11,13 @@ public class Company {
     private boolean isActive;
     private String name;
     private String description;
-    private String deletedAt;
+    private Timestamp deletedAt;
 
     public int getId() {
         return id;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
@@ -28,7 +29,7 @@ public class Company {
         return description;
     }
 
-    public String getDeletedAt() {
+    public Timestamp getDeletedAt() {
         return deletedAt;
     }
 
@@ -48,7 +49,7 @@ public class Company {
         this.description = description;
     }
 
-    public void setDeletedAt(String deletedAt) {
+    public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
     }
 
@@ -56,12 +57,12 @@ public class Company {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Company company)) return false;
-        return getId() == company.getId() && isActive() == company.isActive() && Objects.equals(getName(), company.getName()) && Objects.equals(getDescription(), company.getDescription()) && Objects.equals(getDeletedAt(), company.getDeletedAt());
+        return getId() == company.getId() && isActive == company.isActive && Objects.equals(getName(), company.getName()) && Objects.equals(getDescription(), company.getDescription()) && Objects.equals(getDeletedAt(), company.getDeletedAt());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), isActive(), getName(), getDescription(), getDeletedAt());
+        return Objects.hash(getId(), isActive, getName(), getDescription(), getDeletedAt());
     }
 
     @Override
@@ -71,7 +72,9 @@ public class Company {
                 ", isActive=" + isActive +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", deletedAt='" + deletedAt + '\'' +
+                ", deletedAt=" + deletedAt +
                 '}';
     }
 }
+
+

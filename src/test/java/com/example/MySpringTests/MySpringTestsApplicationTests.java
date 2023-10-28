@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class MySpringTestsApplicationTests {
@@ -49,13 +50,28 @@ class MySpringTestsApplicationTests {
 	}
 	@Test
 	@DisplayName("Проверить, что неактивный сотрудник не отображается в списке")
-	public void Test3(){
-
+	public void Test3() throws SQLException, IOException {
+//		добавляем новую компанию в БД, получаем ее id
+		int newCompanyId= xClientDB.addCompany();
+//		добавляем нового сотрудника в новую компанию через БД
+		int employeeId = xClientDB.addEmployee(newCompanyId);
+//		изменяем поле is_active на false через БД
+		xClientDB.changeEmployeeIsActiveInfo(employeeId);
+//		запрашиваем этого неактивного сотрудника по id компании через api
+		List<Employee> employeeByCompanyId = xClient.getEmployeeByCompanyId(newCompanyId);
+		assertEquals(0,employeeByCompanyId.size());
 	}
 	@Test
 	@DisplayName("Проверить, что у удаленной компании проставляется в БД поле deletedAt")
-	public void Test4(){
-
+	public void Test4() throws SQLException, IOException {
+//		добавляем новую компанию в БД, получаем ее id
+		int newCompanyId= xClientDB.addCompany();
+//		удаляем эту компанию через api
+		xClient.deleteCompany(newCompanyId);
+//		запрашиваем удаленную компанию из БД
+		Company companyById = xClientDB.getCompanyById(newCompanyId);
+//		проверяем что поле deleted_at не равно null
+		assertTrue(companyById.getDeletedAt()!=null);
 	}
 
 }
