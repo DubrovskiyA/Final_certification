@@ -59,7 +59,7 @@ class MySpringTestsApplicationTests {
 		xClientDB.changeEmployeeIsActiveInfo(employeeId);
 //		запрашиваем этого неактивного сотрудника по id компании через api
 		List<Employee> employeeByCompanyId = xClient.getEmployeeByCompanyId(newCompanyId);
-		assertEquals(0,employeeByCompanyId.size());
+		assertEquals(0,employeeByCompanyId.size(), "Неактивный сотрудник отображается в списке");
 	}
 	@Test
 	@DisplayName("Проверить, что у удаленной компании проставляется в БД поле deletedAt")
@@ -73,5 +73,4 @@ class MySpringTestsApplicationTests {
 //		проверяем что поле deleted_at не равно null
 		assertTrue(companyById.getDeletedAt()!=null);
 	}
-
 }
