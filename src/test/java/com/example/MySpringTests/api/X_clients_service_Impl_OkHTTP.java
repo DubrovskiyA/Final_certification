@@ -6,11 +6,16 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 @Component
+@Configuration
+@PropertySource("classpath:application.properties")
+@PropertySource("classpath:test-data.properties")
 public class X_clients_service_Impl_OkHTTP implements X_clients_service {
     @Value("${base_url}")
     private String BASE_URL;
@@ -27,11 +32,16 @@ public class X_clients_service_Impl_OkHTTP implements X_clients_service {
     @Autowired
     private X_clients_auth_Impl_OkHTTP auth;
     private MediaType APPLICATION_JSON=MediaType.parse("application/json; charset=utf-8");
-    private final String company_name="AAAAAAA";
-    private final String company_desc="bbbbbbb";
-    private final String firstName="Greg";
-    private final String lastName="Bill";
-    private final String phone="9098089988";
+    @Value("${company_name}")
+    private String company_name;
+    @Value("${company_desc}")
+    private String company_desc;
+    @Value("${first_name}")
+    private String firstName;
+    @Value("${last_name}")
+    private String lastName;
+    @Value("${phone}")
+    private String phone;
 
     @Override
     public List<Company> getAllCompanyList() throws IOException {

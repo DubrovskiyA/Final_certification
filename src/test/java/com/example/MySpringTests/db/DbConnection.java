@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @Component
-public class ConnectionToDB {
+public class DbConnection {
     private Connection connection;
     @Value("${connection_string}")
     private String connectionString;
@@ -15,8 +15,14 @@ public class ConnectionToDB {
     private String user;
     @Value("${pass}")
     private String pass;
-    Connection getConnection() throws SQLException {
+    public Connection getConnection() throws SQLException {
         connection=DriverManager.getConnection(connectionString,user,pass);
         return connection;
+    }
+    public void close(){
+        if (connection!=null){
+            connection=null;
+        }
+        System.out.println("===== connection closed =====");
     }
 }

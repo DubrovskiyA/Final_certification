@@ -3,21 +3,32 @@ package com.example.MySpringTests.db;
 import com.example.MySpringTests.Model.Company;
 import com.example.MySpringTests.Model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Configuration
+@PropertySource("classpath:test-data.properties")
 public class X_clients_repository_Impl_JDBC implements X_clients_repository{
     @Autowired
-    private ConnectionToDB connection;
-    private String company_name="AAAAAAA";
-    private String company_desc="bbbbbbb";
-    private String first_name="Greg";
-    private String last_name="Bill";
-    private String phone="9098087766";
+    private DbConnection connection;
+    @Value("${company_name}")
+    private String company_name;
+    @Value("${company_desc}")
+    private String company_desc;
+    @Value("${first_name}")
+    private String first_name;
+    @Value("${last_name}")
+    private String last_name;
+    @Value("${phone}")
+    private String phone;
     private final static String GET_ALL_COMPANY="select*from company where \"deleted_at\" is null";
     private final static String GET_ALL_ACTIVE_COMPANY="select*from company where \"is_active\"='true' and \"deleted_at\" is null";
     private final static String ADD_NEW_COMPANY="insert into company (name, description) values (?,?)";
@@ -27,8 +38,9 @@ public class X_clients_repository_Impl_JDBC implements X_clients_repository{
     private final static String ADD_NEW_EMPLOYEE="insert into employee (company_id, first_name, last_name, phone) values (?,?,?,?)";
     private final static String GET_LAST_ADDED_EMPLOYEE="select*from employee order by \"id\" desc limit 1";
     private final static String CHANGE_IS_ACTIVE_EMPLOYEE_INFO="update employee set is_active='false' where \"id\"=?";
-    private final static String GET_EMPLOYEE_BY_ID="select*employee where \"id\"=?";
     private final static String GET_COMPANY_BY_ID="select*from company where \"id\"=?";
+    private final static String DELETE_EMPLOYEE_BY_NAME="delete from employee where \"first_name\"=?";
+    private final static String DELETE_COMPANY_BY_NAME="delete from company where \"name\"=?";
 
 
     @Override
@@ -129,5 +141,24 @@ public class X_clients_repository_Impl_JDBC implements X_clients_repository{
         Company company=new Company();
         company.setDeletedAt(set.getTimestamp("deleted_at"));
         return company;
+    }
+    private void deleteEmployee() throws SQLException {
+        System.out.println("===== cleaning db after tests =====");
+        PreparedStatement statement=connection.getConnection().prepareStatement(DELETE_EMPLOYEE_BY_NAME);
+        statement.setString(1,first_name);
+        int i = statement.executeUpdate();
+        System.out.println("deleted employees from employee table:"+i);
+    }
+    private void deleteCompanyByName() throws SQLException {
+        PreparedStatement statement=connection.getConnection().prepareStatement(DELETE_COMPANY_BY_NAME);
+        statement.setString(1,company_name);
+        int i = statement.executeUpdate();
+        System.out.println("deleted companies from company table:"+i);
+    }
+    @PreDestroy
+    private void preDestroy() throws SQLException {
+        deleteEmployee();
+        deleteCompanyByName();
+        connection.close();
     }
 }

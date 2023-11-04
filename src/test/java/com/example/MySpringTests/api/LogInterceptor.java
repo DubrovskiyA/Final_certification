@@ -56,14 +56,16 @@ public class LogInterceptor implements Interceptor {
                 System.out.println(key + " : " + value);
             }
         }
-        long length = Long.parseLong(Objects.requireNonNull(response.header("content-length")));
-        if (length > 0) {
-            System.out.println("BODY:");
-            BufferedSource buffer = Okio.buffer(new GzipSource(response.peekBody(length).source()));
-            String content = buffer.readUtf8();
-            System.out.println(content);
-        } else {
-            System.out.println("NO BODY");
+        if (respHeaders.containsKey("content-length")) {
+            long length = Long.parseLong(Objects.requireNonNull(response.header("content-length")));
+            if (length > 0) {
+                System.out.println("BODY:");
+                BufferedSource buffer = Okio.buffer(new GzipSource(response.peekBody(length).source()));
+                String content = buffer.readUtf8();
+                System.out.println(content);
+            } else {
+                System.out.println("NO BODY");
+            }
         }
         System.out.println();
     }
